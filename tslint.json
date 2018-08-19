@@ -8,8 +8,6 @@
     ]
   },
   "rules": {
-    "check-groups": false,
-    "ordered-imports": false,
     "object-literal-sort-keys": false,
     "no-string-literal": false,
     "no-empty": false,
@@ -17,6 +15,7 @@
     "only-arrow-functions": false,
     "no-shadowed-variable": false,
     "no-namespace": false,
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "member-ordering": [true, {"order": "instance-sandwich"}]
   }
 }

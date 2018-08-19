@@ -1,11 +1,11 @@
+import produce from "immer";
 import React from "react";
 import {
   map,
 } from "rxjs/operators";
-import produce from "immer";
 import {
-  IReactiveProps,
   createComponent,
+  IReactiveProps,
 } from "./reactive-react";
 
 interface ITestState {

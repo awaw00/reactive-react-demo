@@ -1,15 +1,15 @@
-import React from "react";
-import nanoid from 'nanoid';
 import isEqual from "lodash.isequal";
-import { of, Subject, BehaviorSubject, Observable } from "rxjs";
+import nanoid from 'nanoid';
+import React from "react";
+import {BehaviorSubject, Observable, of, Subject} from "rxjs";
 import {
+  distinctUntilChanged,
   filter,
-  startWith,
-  withLatestFrom,
-  merge,
   map,
+  merge,
+  startWith,
   tap,
-  distinctUntilChanged
+  withLatestFrom
 } from "rxjs/operators";
 
 export interface IAction<T = any> {
@@ -28,12 +28,12 @@ export interface IReactiveProps<S, P> {
 export type Reducer<T = any> = (state: T, action: IAction) => T;
 export type ReducerOnAction<T = any> = (type: string) => (reducer: Reducer<T>) => void;
 export type ReducerOnActionOfScope<T = any> = (scope?: string) => ReducerOnAction<T>;
-export type Reducers<T = any, S = any> = (this: S, params: {on: ReducerOnAction<T>, onScope: ReducerOnActionOfScope<T>}) => void;
+export type Reducers<T = any, S = any> = (this: S, params: { on: ReducerOnAction<T>, onScope: ReducerOnActionOfScope<T> }) => void;
 
 export type Effect<T = any> = (action$: Observable<IAction>) => Observable<T>;
 export type EffectOnAction<T = any> = (type: string) => (effect: Effect<T>) => void;
 export type EffectOnActionOfScope<T = any> = (scope?: string) => EffectOnAction<T>;
-export type Effects<T = any, S = any> = (this: S, params: {on: EffectOnAction<T>, onScope: EffectOnActionOfScope<T>}) => void;
+export type Effects<T = any, S = any> = (this: S, params: { on: EffectOnAction<T>, onScope: EffectOnActionOfScope<T> }) => void;
 
 export type RenderRes = React.ReactNode | (() => (props?: any) => React.ReactNode);
 
@@ -63,7 +63,8 @@ const defaultAction$ = new Subject();
 
 export const ActionContext = React.createContext(defaultAction$);
 
-export type PropsWithAction$<P> = P & {action$?: Subject<IAction>};
+export type PropsWithAction$<P> = P & { action$?: Subject<IAction> };
+
 export function withAction<P extends object>(Comp$: React.ComponentType<PropsWithAction$<P>>) {
   return (props: P) => (
     <ActionContext.Consumer>
@@ -74,7 +75,8 @@ export function withAction<P extends object>(Comp$: React.ComponentType<PropsWit
 
 export const ScopeContext = React.createContext('');
 
-export type PropsWithScope<P> = P & {scope?: string};
+export type PropsWithScope<P> = P & { scope?: string };
+
 export function withScope<P extends object>(Comp$: React.ComponentType<PropsWithScope<P>>) {
   return (props: PropsWithScope<P>) => {
     const {scope, ...restProps} = props as any;
@@ -94,16 +96,17 @@ export function withScope<P extends object>(Comp$: React.ComponentType<PropsWith
   };
 }
 
-export type RenderStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P, S>, stateAndProps: {state: SS, props: SP}) => React.ReactNode;
+export type RenderStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P, S>, stateAndProps: { state: SS, props: SP }) => React.ReactNode;
 export type CreateInstanceStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P, S>) => Observable<any>;
 export type ReactiveComponentLifecycle<SS, SP, P, S> = {
   [L in keyof React.ComponentLifecycle<P, S>]: (this: IReactiveComponentBase<SS, SP, P, S>, ...args: any[]) => any;
 };
+
 export interface ICreateComponentOptions<SS, SP, P, S> extends ReactiveComponentLifecycle<SS, SP, P, S> {
   withScope?: boolean;
   withAction?: boolean;
-  streams?: {[name: string]: CreateInstanceStream<SS, SP, P, S>};
-  methods?: {[name: string]: (this: IReactiveComponentBase<SS, SP, P, S>, ...args: any[]) => any};
+  streams?: { [name: string]: CreateInstanceStream<SS, SP, P, S> };
+  methods?: { [name: string]: (this: IReactiveComponentBase<SS, SP, P, S>, ...args: any[]) => any };
   initialState: SS;
   reducers?: Reducers<SS, IReactiveComponentBase<SS, SP, P, S>>;
   effects?: Effects<SS, IReactiveComponentBase<SS, SP, P, S>>;
@@ -114,7 +117,7 @@ export interface ICreateComponentOptions<SS, SP, P, S> extends ReactiveComponent
   render?: () => React.ReactNode;
 }
 
-function shallowDiff (a: any, b: any, skipKeys?: string[]) {
+function shallowDiff(a: any, b: any, skipKeys?: string[]) {
   for (const i in a) {
     if (skipKeys && skipKeys.indexOf(i) >= 0) {
       continue;
@@ -135,7 +138,7 @@ function shallowDiff (a: any, b: any, skipKeys?: string[]) {
   return false;
 }
 
-export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = {scope?: string, props$?: Observable<SP>}, S = {}>(options: ICreateComponentOptions<SS, SP, P, S>) {
+export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = { scope?: string, props$?: Observable<SP> }, S = {}>(options: ICreateComponentOptions<SS, SP, P, S>) {
   const {
     withScope: isWithScope,
     withAction: isWithAction,
@@ -161,13 +164,13 @@ export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = 
     public childScope: string = '';
     public action$: Subject<IAction>;
     public state$: BehaviorSubject<SS>;
-    public update$: Observable<{state: SS, props: P}>;
+    public update$: Observable<{ state: SS, props: P }>;
 
     private render$: RenderStream<SS, SP, P, S>;
 
     constructor(props: P) {
       super(props);
-      const { scope } = props;
+      const {scope} = props;
       const childScope = scope || nanoid(6);
       const props$ = props.props$ as Observable<SP>;
       const state$ = props.state$ || new BehaviorSubject(initialState);
@@ -205,7 +208,7 @@ export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = 
 
         const on = onScope(void 0);
 
-        reducers.bind(this)({ on, onScope });
+        reducers.bind(this)({on, onScope});
 
         if (reducerArr.length > 0) {
           reducer = function (state = initialState, action) {
@@ -234,7 +237,7 @@ export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = 
           };
         }
       } else if (initialState) {
-        reducer = function(state = initialState) {
+        reducer = function (state = initialState) {
           return state;
         };
       }
@@ -263,23 +266,31 @@ export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = 
         };
         const on = onScope();
 
-        effects.bind(this)({ on, onScope });
+        effects.bind(this)({on, onScope});
       }
 
-      interface IActionAndState {action: IAction, state: SS}
+      interface IActionAndState {
+        action: IAction,
+        state: SS
+      }
+
       let update$: Observable<any> | null = null;
       if (reducer) {
         update$ = action$.pipe(
-          startWith<IAction>({ type: "@@INIT" }),
-          withLatestFrom<IAction, SS, IActionAndState>(state$, (action, state) => ({ action, state })),
-          map<IActionAndState, SS>(({ action, state }) => {
+          startWith<IAction>({type: "@@INIT"}),
+          withLatestFrom<IAction, SS, IActionAndState>(state$, (action, state) => ({action, state})),
+          map<IActionAndState, SS>(({action, state}) => {
             return reducer(state, action);
           }),
           tap<SS>(state => state$.next(state))
         );
       }
 
-      interface IPropsAndState {props?: SP, state?: SS}
+      interface IPropsAndState {
+        props?: SP,
+        state?: SS
+      }
+
       if (props$) {
         if (update$) {
           update$ = props$.pipe(
@@ -292,7 +303,7 @@ export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = 
         if (update$) {
           update$ = update$.pipe(map(state => ({state})));
         } else {
-          update$ = of({ state: {}, props: {} });
+          update$ = of({state: {}, props: {}});
         }
       }
 
@@ -308,11 +319,11 @@ export function createComponent<SS, SP = {}, P extends IReactiveProps<SS, SP> = 
         this.state = getInitialState();
       }
 
-      let subscriber: {unsubscribe: () => any} | null = null;
+      let subscriber: { unsubscribe: () => any } | null = null;
       const subscribeRerender = () => {
         if (update$) {
-          subscriber = update$.subscribe(({ state, props }) => {
-            this.renderRes = this.render$ ? this.render$({ state, props }) : null;
+          subscriber = update$.subscribe(({state, props}) => {
+            this.renderRes = this.render$ ? this.render$({state, props}) : null;
             this.forceUpdate();
           });
         }
