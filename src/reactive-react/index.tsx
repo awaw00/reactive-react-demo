@@ -2,14 +2,7 @@ import isEqual from 'lodash.isequal';
 import nanoid from 'nanoid';
 import React from 'react';
 import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  startWith,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, tap, withLatestFrom, } from 'rxjs/operators';
 
 export interface IAction<T = any> {
   type: string;
@@ -105,7 +98,7 @@ export type RenderStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P
 export type CreateInstanceStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P, S>) => Observable<any>;
 export type ReactiveComponentLifecycle<SS, SP, P, S> = {
   [L in keyof React.ComponentLifecycle<P, S>]: (this: IReactiveComponentBase<SS, SP, P, S>, ...args: any[]) => any;
-  };
+};
 
 export interface ICreateComponentOptions<SS, SP, P, S> extends ReactiveComponentLifecycle<SS, SP, P, S> {
   name?: string;
