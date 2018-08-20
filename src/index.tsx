@@ -15,7 +15,7 @@ ReactDOM.render(
   <div>
     <ActionContext.Provider value={action$}>
       <div>
-        <App test="123"/>
+        <App/>
       </div>
     </ActionContext.Provider>
   </div>,

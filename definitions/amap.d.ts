@@ -1,54 +1,54 @@
 declare namespace AMapModule {
   class LngLat {
-    constructor(lng: number, lat: number);
+    constructor (lng?: number, lat?: number);
 
-    public offset(w: number, s: number): LngLat;
+    public offset (w: number, s: number): LngLat;
 
-    public distance(lnglat: LngLat | LngLat[]): number;
+    public distance (lnglat: LngLat | LngLat[]): number;
 
-    public getLng(): number;
+    public getLng (): number;
 
-    public getLat(): number;
+    public getLat (): number;
 
-    public equals(lnglat: LngLat): boolean;
+    public equals (lnglat: LngLat): boolean;
 
-    public toString(): string;
+    public toString (): string;
   }
 
   class Bounds {
-    constructor(southWest: LngLat, northEast: LngLat);
+    constructor (southWest: LngLat, northEast: LngLat);
 
-    public contains(point: LngLat): boolean;
+    public contains (point: LngLat): boolean;
 
-    public getCenter(): LngLat;
+    public getCenter (): LngLat;
 
-    public getSouthWest(): LngLat;
+    public getSouthWest (): LngLat;
 
-    public getNorthEast(): LngLat;
+    public getNorthEast (): LngLat;
 
-    public toString(): string;
+    public toString (): string;
   }
 
   class Size {
-    constructor(width: number, height: number);
+    constructor (width: number, height: number);
 
-    public getWidth(): number;
+    public getWidth (): number;
 
-    public getHeight(): number;
+    public getHeight (): number;
 
-    public toString(): string;
+    public toString (): string;
   }
 
   class Pixel {
-    constructor(x: number, y: number);
+    constructor (x: number, y: number);
 
-    public getX(): number;
+    public getX (): number;
 
-    public getY(): number;
+    public getY (): number;
 
-    public equals(point: Pixel): boolean;
+    public equals (point: Pixel): boolean;
 
-    public toString(): string;
+    public toString (): string;
   }
 
   interface ITileLayerOptions {
@@ -64,23 +64,23 @@ declare namespace AMapModule {
   }
 
   class TileLayer {
-    constructor(tileOpt: ITileLayerOptions);
+    constructor (tileOpt: ITileLayerOptions);
 
-    public setOpacity(alpha: number): void;
+    public setOpacity (alpha: number): void;
 
-    public show(): void;
+    public show (): void;
 
-    public hide(): void;
+    public hide (): void;
 
-    public getTiles(): any[];
+    public getTiles (): any[];
 
-    public reload(): void;
+    public reload (): void;
 
-    public setTileUrl(url: string): void;
+    public setTileUrl (url: string): void;
 
-    public getZooms(): number[];
+    public getZooms (): number[];
 
-    public setMap(map: Map): void;
+    public setMap (map: Map): void;
   }
 
   interface IView2DOptions {
@@ -91,15 +91,15 @@ declare namespace AMapModule {
   }
 
   class View2D {
-    constructor(opt: IView2DOptions);
+    constructor (opt: IView2DOptions);
   }
 
   interface IMapOptions {
     view?: View2D;
     layers?: TileLayer[];
     zoom?: number;
-    center: LngLat;
-    labelzIndex: number;
+    center?: LngLat | number[];
+    labelzIndex?: number;
     zooms?: number[];
     lang?: string;
     defaultCursor?: string;
@@ -110,7 +110,7 @@ declare namespace AMapModule {
     rotateEnable?: boolean;
     resizeEnable?: boolean;
     showIndoorMap?: boolean;
-    indoorMap: any;
+    indoorMap?: any;
     expandZoomRange?: boolean;
     dragEnable?: boolean;
     zoomEnable?: boolean;
@@ -120,8 +120,8 @@ declare namespace AMapModule {
     scrollWheel?: boolean;
     touchZoom?: boolean;
     touchZoomCenter?: number;
-    mapStyle: string;
-    features: string[];
+    mapStyle?: string;
+    features?: string[];
     showBuildingBlock?: boolean;
     viewMode?: string;
     pitch?: number;
@@ -182,119 +182,282 @@ declare namespace AMapModule {
   }
 
   class Map {
-    constructor(container: string | HTMLElement, opts: IMapOptions);
+    constructor (container: string | HTMLElement, opts?: IMapOptions);
 
-    public poiOnAMAP(obj: object): void;
+    public poiOnAMAP (obj: object): void;
 
-    public detailOnAMAP(obj: object): void;
+    public detailOnAMAP (obj: object): void;
 
-    public getZoom(): number;
+    public getZoom (): number;
 
-    public getLayers(): TileLayer[];
+    public getLayers (): TileLayer[];
 
-    public getCenter(): LngLat;
+    public getCenter (): LngLat;
 
-    public getContainer(): HTMLElement;
+    public getContainer (): HTMLElement;
 
-    public getCity(callback: (result: ICity) => any): void;
+    public getCity (callback: (result: ICity) => any): void;
 
-    public getBounds(): Bounds;
+    public getBounds (): Bounds;
 
-    public getLabelzIndex(): number;
+    public getLabelzIndex (): number;
 
-    public getLimitBounds(): Bounds;
+    public getLimitBounds (): Bounds;
 
-    public getLang(): string;
+    public getLang (): string;
 
-    public getSize(): Size;
+    public getSize (): Size;
 
-    public getRotation(): number;
+    public getRotation (): number;
 
-    public getStatus(): IMapStatus;
+    public getStatus (): IMapStatus;
 
-    public getDefaultCursor(): string;
+    public getDefaultCursor (): string;
 
-    public getResolution(point: LngLat): number;
+    public getResolution (point: LngLat): number;
 
-    public getScale(dpi: number): number;
+    public getScale (dpi: number): number;
 
-    public setZoom(level: number): void;
+    public setZoom (level: number): void;
 
-    public setlabelzIndex(index: number): void;
+    public setlabelzIndex (index: number): void;
 
-    public setLayers(layers: TileLayer[]): void;
+    public setLayers (layers: TileLayer[]): void;
 
-    public add(overlayers: any[]): void;
+    public add (overlayers: any[]): void;
 
-    public remove(overlayers: any[]): void;
+    public remove (overlayers: any[]): void;
 
-    public getAllOverlays(type?: OverlayerType): any;
+    public getAllOverlays (type?: OverlayerType): any;
 
-    public setCenter(position: LngLat): void;
+    public setCenter (position: LngLat): void;
 
-    public setZoomAndCenter(zoomLevel: number, center: LngLat): void;
+    public setZoomAndCenter (zoomLevel: number, center: LngLat): void;
 
-    public setCity(city: string, callback: () => any): void;
+    public setCity (city: string, callback: () => any): void;
 
-    public setBounds(bound: Bounds): void;
+    public setBounds (bound: Bounds): void;
 
-    public setLimitBounds(bound: Bounds): void;
+    public setLimitBounds (bound: Bounds): void;
 
-    public clearLimitBounds(): void;
+    public clearLimitBounds (): void;
 
-    public setLang(lang: string): string;
+    public setLang (lang: string): string;
 
-    public setRotation(rotation: number): number;
+    public setRotation (rotation: number): number;
 
-    public setStatus(status: IMapStatus): number;
+    public setStatus (status: IMapStatus): number;
 
-    public setDefaultCursor(cursor: string): void;
+    public setDefaultCursor (cursor: string): void;
 
-    public zoomIn(): void;
+    public zoomIn (): void;
 
-    public zoomOut(): void;
+    public zoomOut (): void;
 
-    public panTo(position: LngLat): void;
+    public panTo (position: LngLat): void;
 
-    public panBy(x: number, y: number): void;
+    public panBy (x: number, y: number): void;
 
-    public setFitView(overlayList: any[]): void;
+    public setFitView (overlayList: any[]): void;
 
-    public clearMap(): void;
+    public clearMap (): void;
 
-    public destroy(): void;
+    public destroy (): void;
 
-    public plugin(name: string | string[], callback: () => any): void;
+    public plugin (name: string | string[], callback: () => any): void;
 
-    public addControl(obj: any): void;
+    public addControl (obj: any): void;
 
-    public removeControl(obj: any): void;
+    public removeControl (obj: any): void;
 
-    public clearInfoWindow(): void;
+    public clearInfoWindow (): void;
 
-    public pixelToLngLat(pixel: Pixel, level: number): LngLat;
+    public pixelToLngLat (pixel: Pixel, level: number): LngLat;
 
-    public lnglatToPixel(lnglat: LngLat, level: number): Pixel;
+    public lnglatToPixel (lnglat: LngLat, level: number): Pixel;
 
-    public containerToLngLat(pixel: Pixel): LngLat;
+    public containerToLngLat (pixel: Pixel): LngLat;
 
-    public lngLatToContainer(lnglat: LngLat): Pixel;
+    public lngLatToContainer (lnglat: LngLat): Pixel;
 
-    public setMapStyle(style: string): void;
+    public setMapStyle (style: string): void;
 
-    public getMapStyle(): string;
+    public getMapStyle (): string;
 
-    public setFeatures(feature: any[]): void;
+    public setFeatures (feature: any[]): void;
 
-    public getFeatures(): any[];
+    public getFeatures (): any[];
 
-    public setDefaultLayer(layer: TileLayer): void;
+    public setDefaultLayer (layer: TileLayer): void;
 
-    public setPitch(pitch: number): void;
+    public setPitch (pitch: number): void;
 
-    public getPitch(): number;
+    public getPitch (): number;
 
-    public on(event: MapEventName, handler: (mapEvent?: IMapEvent, ...args: any[]) => any, context: any): void;
+    public on (event: MapEventName, handler: (mapEvent?: IMapEvent, ...args: any[]) => any, context?: any): void;
+  }
+
+  interface IIconOption {
+    size?: Size;
+    imageOffset?: Pixel;
+    image: string;
+    imageSize?: Size;
+  }
+
+  class Icon {
+    constructor (opt: IIconOption);
+
+    public getImageSize (): Size;
+
+    public setImageSize (size: Size): void;
+  }
+
+  type MarkerAnimationType = 'AMAP_ANIMATION_NONE' | 'AMAP_ANIMATION_DROP' | 'AMAP_ANIMATION_BOUNCE';
+
+  interface IMarkerLabel {
+    content: string;
+    offset?: Pixel;
+  }
+
+  type MarkerShapeType = 'circle' | 'poly' | 'rect';
+
+  interface IMarkerShapeOptions {
+    coords: number[];
+    type: MarkerShapeType;
+  }
+
+  class MarkerShape {
+    constructor (opt: IMarkerShapeOptions);
+  }
+
+  type MarkerEventName =
+    'click'
+    | 'dblclick'
+    | 'rightclick'
+    | 'mousemove'
+    | 'mouseover'
+    | 'mouseout'
+    | 'mouseup'
+    | 'dragstart'
+    | 'dragging'
+    | 'dragend'
+    | 'moving'
+    | 'moveend'
+    | 'movealone'
+    | 'touchstart'
+    | 'touchmove'
+    | 'touchend';
+
+  interface IMarkerOptions {
+    map?: Map;
+    position?: LngLat;
+    offset?: Pixel;
+    icon?: string | Icon;
+    content?: string | object;
+    topWhenClick?: boolean;
+    bubble?: boolean;
+    draggable?: boolean;
+    raiseOnDrag?: boolean;
+    cursor?: string;
+    visible?: boolean;
+    zIndex?: number;
+    angle?: number;
+    autoRotation?: boolean;
+    animation?: MarkerAnimationType;
+    shadow?: Icon;
+    title?: string;
+    clickable?: boolean;
+    shape?: MarkerShape;
+    extData?: any;
+    label?: IMarkerLabel;
+  }
+
+  class Marker {
+    constructor (opt: IMarkerOptions);
+
+    public markOnAMAP (obj: object): void;
+
+    public getOffset (): Pixel;
+
+    public setOffset (offset: Pixel): void;
+
+    public setAnimation (animate: MarkerAnimationType): void;
+
+    public getAnimation (): MarkerAnimationType;
+
+    public setClickable (clickable: boolean): void;
+
+    public getClickable (): boolean;
+
+    public getPosition (): LngLat;
+
+    public setPosition (lnglat: LngLat): void;
+
+    public setAngle (angle: number): void;
+
+    public setLabel (label: IMarkerLabel): void;
+
+    public getLabel (): IMarkerLabel;
+
+    public getAngle (): number;
+
+    public setzIndex (index: number): void;
+
+    public getzIndex (): number;
+
+    public setIcon (content: string | Icon): void;
+
+    public getIcon (): string | Icon;
+
+    public setDraggable (draggable: boolean): void;
+
+    public getDraggable (): boolean;
+
+    public hide (): void;
+
+    public show (): void;
+
+    public setCursor (cursor: string): string;
+
+    public setContent (html: string | HTMLElement): void;
+
+    public getContent (): string;
+
+    public moveAlone (path: any[], speed: number, f: any, circlable: boolean): void;
+
+    public moveTo (lnglat: LngLat, speed: number, f: any): void;
+
+    public stopMove (): void;
+
+    public pauseMove (): void;
+
+    public resumeMove (): void;
+
+    public setMap (map: Map | null): void;
+
+    public getMap (): Map;
+
+    public setTitle (title: string): void;
+
+    public getTitle (): string;
+
+    public setTop (isTop: boolean): void;
+
+    public getTop (): boolean;
+
+    public setShadow (icon: Icon): void;
+
+    public getShadow (): Icon;
+
+    public setShape (shape: MarkerShape): void;
+
+    public getShape (): MarkerShape;
+
+    public setExtData (data: any): void;
+
+    public getExtData (): any;
+
+    public on (eventName: MarkerEventName, handler: any, context?: any): void;
   }
 
   export interface IAMap {
@@ -303,6 +466,9 @@ declare namespace AMapModule {
     LngLat: typeof LngLat;
     Bounds: typeof Bounds;
     Map: typeof Map;
+    Marker: typeof Marker;
+    MarkerShape: typeof MarkerShape;
+    Icon: typeof Icon;
   }
 }
 
