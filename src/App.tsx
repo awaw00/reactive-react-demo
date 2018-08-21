@@ -1,7 +1,7 @@
 import React from 'react';
 import AMapComponent from './components/AMap';
 import {
-  createComponent
+  createComponent,
 } from './reactive-react';
 
 const App = createComponent({
@@ -13,7 +13,7 @@ const App = createComponent({
         <AMapComponent/>
       </div>
     );
-  }
+  },
 });
 
 export default App;

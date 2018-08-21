@@ -98,7 +98,7 @@ export type RenderStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P
 export type CreateInstanceStream<SS, SP, P, S> = (this: IReactiveComponentBase<SS, SP, P, S>) => Observable<any>;
 export type ReactiveComponentLifecycle<SS, SP, P, S> = {
   [L in keyof React.ComponentLifecycle<P, S>]: (this: IReactiveComponentBase<SS, SP, P, S>, ...args: any[]) => any;
-};
+  };
 
 export interface ICreateComponentOptions<SS, SP, P, S> extends ReactiveComponentLifecycle<SS, SP, P, S> {
   name?: string;

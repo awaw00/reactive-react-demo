@@ -56,6 +56,6 @@ export interface IRemovePointPayload {
 export function removePoint (payload: IRemovePointPayload) {
   return {
     type: types.REMOVE_POINT,
-    payload
+    payload,
   };
 }

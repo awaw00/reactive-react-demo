@@ -15,7 +15,7 @@ import {
 import createAMap, { IMapState } from './createAMap';
 import * as types from './types';
 
-export interface IState extends IMapState{
+export interface IState extends IMapState {
   foo?: any;
 }
 
@@ -25,7 +25,7 @@ const AMapComponent = createComponent<IState>({
     center: null,
     zoom: 13,
     points: [
-      [120, 30]
+      [120, 30],
     ],
   },
   reducers: (reducer) => {

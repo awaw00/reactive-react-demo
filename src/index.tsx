@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs';
 import App from './App';
 import './index.css';
 
@@ -9,7 +9,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 const action$ = new Subject();
 
-action$.subscribe(action => console.log("action", action));
+action$.subscribe(action => console.log('action', action));
 
 ReactDOM.render(
   <div>
@@ -19,6 +19,6 @@ ReactDOM.render(
       </div>
     </ActionContext.Provider>
   </div>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
 registerServiceWorker();
