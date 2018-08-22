@@ -14,6 +14,7 @@ export function mapMove (payload: IMovePayload) {
 export interface IZoomPayload {
   zoom: number;
   center?: AMapModule.LngLat;
+  bounds: AMapModule.Bounds;
 }
 
 export function mapZoom (payload: IZoomPayload) {

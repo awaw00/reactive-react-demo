@@ -1,12 +1,15 @@
-import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
+import isEqual from 'lodash.isequal';
+import { BehaviorSubject, concat, from, merge, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, pairwise, skip, startWith, tap, withLatestFrom } from 'rxjs/operators';
 import { IAction } from 'src/reactive-react';
 import { mapMove, mapZoom } from './actions';
+import LngLat = AMapModule.LngLat;
 
 export interface IMapState {
   center: AMapModule.LngLat | null;
   zoom: number;
   points: number[][];
+  visibleRange: number;
 }
 
 interface ICreateAMapOptions {
@@ -43,12 +46,45 @@ export default function createAMap (opts: ICreateAMapOptions) {
   );
 
   // 单车所在的点数组状态流
-  const markers$ = new Subject<AMapModule.Marker[]>();
+  const markers$ = new BehaviorSubject<AMapModule.Marker[]>([]);
 
-  const markersUpdate$ = state$.pipe(
+  const markersVisibleAndStyle$ = state$.pipe(
+    filter(state => state.center !== null),
+    map(state => ({center: state.center, visibleRange: state.visibleRange})),
+    distinctUntilChanged(isEqual),
+    withLatestFrom(markers$, (fromState, markers) => ({...fromState, markers})),
+    tap((value: {center: LngLat, visibleRange: number, markers: AMapModule.Marker[]}) => {
+      const {center, visibleRange, markers} = value;
+      let minDistance = Number.MAX_VALUE;
+      let nearestMarker: AMapModule.Marker | null = null;
+
+      for (const marker of markers) {
+        const distance = AMap.GeometryUtil.distance(center, marker.getPosition());
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestMarker = marker;
+        }
+        if (distance <= visibleRange) {
+          marker.show();
+        } else {
+          marker.hide();
+        }
+
+        if (marker.getIcon()) {
+          marker.setIcon(undefined);
+        }
+      }
+
+      if (nearestMarker && minDistance <= visibleRange) {
+        nearestMarker.setTop(true);
+      }
+    })
+  );
+
+  const markersAddOrRemove$ = state$.pipe(
     map(state => state.points),
     distinctUntilChanged(),
-    withLatestFrom(markers$.pipe(startWith([]))),
+    withLatestFrom(markers$),
     map(arr => {
       const points: number[][] = arr[0];
       const markers: AMapModule.Marker[] = arr[1];
@@ -93,50 +129,9 @@ export default function createAMap (opts: ICreateAMapOptions) {
     tap(v => markers$.next(v)),
   );
 
-  const markers1$ = combineLatest(
-    of([]),
-    state$.pipe(
-      map(state => state.points),
-      distinctUntilChanged(),
-    ),
-  ).pipe(
-    map(arr => {
-      const markers: AMapModule.Marker[] = arr[0];
-      const points: number[][] = arr[1];
-
-      // 找到新增的点
-      const newPoints = points.filter(p => {
-        const index = markers.findIndex(m => {
-          const lnglat = m.getPosition();
-          return lnglat.getLng() === p[0] && lnglat.getLat() === p[1];
-        });
-
-        return index < 0;
-      });
-
-      // 找到被移除的点
-      const delMarkers = markers.filter(m => {
-        const lnglat = m.getPosition();
-        const lng = lnglat.getLng();
-        const lat = lnglat.getLat();
-
-        const index = points.findIndex(p => {
-          return p[0] === lng && p[1] === lat;
-        });
-
-        return index < 0;
-      });
-
-      delMarkers.forEach(m => m.setMap(null));
-
-      return markers.filter(m => delMarkers.indexOf(m) >= 0).concat(newPoints.map(p => {
-        return new AMap.Marker({
-          map: aMap,
-          position: new AMap.LngLat(p[0], p[1]),
-        });
-      }));
-    }),
-    tap(v => console.log(v)),
+  const markersUpdate$ = merge(
+    markersAddOrRemove$,
+    markersVisibleAndStyle$,
   );
 
   let subscriber: {unsubscribe: () => void};
@@ -150,7 +145,7 @@ export default function createAMap (opts: ICreateAMapOptions) {
   });
 
   aMap.on('zoomend', (e: any) => {
-    dispatch(mapZoom({zoom: aMap.getZoom(), center: aMap.getCenter()}));
+    dispatch(mapZoom({zoom: aMap.getZoom(), center: aMap.getCenter(), bounds: aMap.getBounds()}));
   });
 
   aMap.on('moveend', (e: any) => {

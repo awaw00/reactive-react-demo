@@ -22,16 +22,26 @@ export interface IState extends IMapState {
 const AMapComponent = createComponent<IState>({
   name: 'AMap',
   initialState: {
-    center: null,
-    zoom: 13,
+    center: new AMap.LngLat(120.062016, 30.281321),
+    zoom: 15,
     points: [
-      [120, 30],
+      [120.062016, 30.281321],
     ],
+    visibleRange: 500
   },
   reducers: (reducer) => {
     reducer.on(types.ZOOM)(immReducer<IState, IZoomPayload>(payload => d => {
-      const {zoom, center} = payload;
+      const {zoom, center, bounds} = payload;
       d.zoom = zoom;
+      const horizontalSize = AMap.GeometryUtil.distance(bounds.getNorthEast(), bounds.getNorthWest());
+      const verticalSize = AMap.GeometryUtil.distance(bounds.getNorthEast(), bounds.getSouthEast());
+      let range = Math.max(horizontalSize, verticalSize);
+
+      if (range > 2000) {
+        range = 2000;
+      }
+
+      d.visibleRange = range;
       if (center) {
         d.center = center;
       }

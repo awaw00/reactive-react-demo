@@ -24,6 +24,10 @@ declare namespace AMapModule {
 
     public getSouthWest (): LngLat;
 
+    public getSouthEast (): LngLat;
+
+    public getNorthWest (): LngLat;
+
     public getNorthEast (): LngLat;
 
     public toString (): string;
@@ -405,7 +409,7 @@ declare namespace AMapModule {
 
     public getzIndex (): number;
 
-    public setIcon (content: string | Icon): void;
+    public setIcon (content: string | Icon | undefined): void;
 
     public getIcon (): string | Icon;
 
@@ -460,6 +464,12 @@ declare namespace AMapModule {
     public on (eventName: MarkerEventName, handler: any, context?: any): void;
   }
 
+  interface IGeometryUtil {
+    distance (p1: number | LngLat, p2: number | LngLat): number;
+
+    distanceToSegment (p: number | LngLat, l0: number | LngLat, l1: number | LngLat): number;
+  }
+
   export interface IAMap {
     Pixel: typeof Pixel;
     Size: typeof Size;
@@ -469,6 +479,7 @@ declare namespace AMapModule {
     Marker: typeof Marker;
     MarkerShape: typeof MarkerShape;
     Icon: typeof Icon;
+    GeometryUtil: IGeometryUtil;
   }
 }
 
